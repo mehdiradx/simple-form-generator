@@ -3,32 +3,36 @@ import { FC, ReactElement } from 'react';
 import { FieldValues, useFormContext } from 'react-hook-form';
 import { FormControl, FormErrorMessage, FormLabel } from '~/components/uiKits';
 import { useErrorMessage } from '~/hooks/useErrorMessage';
+import { useCheckCondition } from '~/hooks/useCheckCondition';
 import { Element } from '~/ts';
 
 type Props = Omit<Element, 'choices' | 'id' | 'type'>;
 
 // TODO: Enrich this Element with more control on Props like placeholder and default value
-// TODO : Add more control on this Element by accessing value by watch(name)
 const TextInputField: FC<Props> = function ({
   name = '',
-  // requiredIf,
-  // visibleIf,
-  // editableIf,
+  requiredIf = [],
+  visibleIf = [],
+  editableIf = [],
 }): ReactElement {
   const { register } = useFormContext<FieldValues>();
   const errorMessage = useErrorMessage(name);
+  const required = useCheckCondition(requiredIf);
+  const visible = useCheckCondition(visibleIf);
+  const editable = useCheckCondition(editableIf);
 
   return (
-    <FormControl isInvalid={!!errorMessage}>
-      <FormLabel>{name}</FormLabel>
+    <FormControl isInvalid={!!errorMessage} hidden={!visible}>
+      <FormLabel>
+        {name} {required ? '*' : null}
+      </FormLabel>
       <Input
+        disabled={!editable}
         type='text'
         {...register(name, {
-          // TODO: Remove these lines! These lines are a test for validation.
-          required: 'This field is required',
           validate: {
-            notShow: (fieldValue) => {
-              return fieldValue !== 'test' || 'This is a test';
+            required: (fieldValue) => {
+              return (required && fieldValue === '') || 'This field is required!';
             },
           },
         })}

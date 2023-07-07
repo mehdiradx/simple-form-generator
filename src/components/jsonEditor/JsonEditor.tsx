@@ -22,9 +22,9 @@ const JsonEditor: FC<Props> = function ({ formSchema, setFormSchema }): ReactEle
           isReadOnly
           w='90%'
           fontFamily='Andale Mono'
-          fontSize={14}
+          fontSize={12}
           minHeight='200px'
-          value={JSON.stringify(formSchema)}
+          value={JSON.stringify(formSchema, null, 2)}
           onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
             setFormSchema(JSON.parse(e.target.value))
           }

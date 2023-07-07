@@ -27,7 +27,7 @@ const renderField = function ({
   requiredIf,
   visibleIf,
   editableIf,
-}: Element): ReactElement {
+}: Element): ReactElement | null {
   let Component: any = null;
 
   switch (type) {
